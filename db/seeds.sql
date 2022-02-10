@@ -24,7 +24,7 @@ VALUES
 ('Jill', 'Jilleon', 2, NULL),
 ('Bob', 'Bigget', 3, 4),
 ('Barb', 'Bregerton', 4, NULL),
-('Mac', 'Martinez', 5, 6),
+('Mark', 'Martinez', 5, 6),
 ('Marcy', 'Miler', 6, NULL),
 ('Rachel', 'Ramierez', 7, NULL),
 ('Rob', 'Red', 8, NULL);

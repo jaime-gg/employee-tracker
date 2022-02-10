@@ -38,39 +38,62 @@ const startQuestions = () => {
     .then((answers) => {
         const {choices} = answers;
         switch (choices) {
-            case "View All Departments":
+            case 'View All Departments':
                 viewDepartments(); 
                 break;
-            case "View All Roles":
+            case 'View All Roles':
                 viewRoles();
                 break;
-            case "View All Employees":
+            case 'View All Employees':
                 viewEmployees();
                 break;
-            case "Add A Department":
+            case 'Add A Department':
                 addDepartment()
             break;
-            case "Add A Role":
+            case 'Add A Role':
                 addRole();
                 break;
-            case "Add An Employee":
+            case 'Add An Employee':
                 addEmployee()
                 break;
-            case "Update An Employee Role":
+            case 'Update An Employee Role':
                 updateEmployee(); 
                 break;
-            case "EXIT":
+            case 'EXIT':
                 process.exit(1);
         };
     });
 };
 
 //-------------------------------------------------------------------------------------------------
-
 // FUNCTIONS RUN BY THE USER'S ANSWER 
 
 // VIEW FUNCTIONS
+viewDepartments = () => {
+    const sql = `SELECT `
+}; 
+
+viewRoles = () => {
+
+}; 
+
+viewEmployees = () => {
+
+}; 
 
 // ADD FUNCTIONS
+addDepartment = () => {
 
+}; 
+
+addRole= () => {
+
+}; 
+
+addEmployee= () => {
+
+}; 
 // EDIT FUNCTIONS
+updateEmployee= () => {
+
+}; 
