@@ -21,5 +21,6 @@
     "url": "https://github.com/jaime-gg/employee-tracker/issues"
   },
   "homepage": "https://github.com/jaime-gg/employee-tracker#readme",
+  "devDependencies": {},
   "description": ""
 }

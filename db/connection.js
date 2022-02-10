@@ -1,15 +1,15 @@
-// dependencies
-const mysql = require("mysql2/promise");
+// DEPENDENCIES
+const mysql = require('mysql2');
 require('dotenv').config()
 
 const db = mysql.createConnection(
     {
         host: 'localhost',
-        // Your MySQL username,
-        user: root,
-        // Your MySQL password
+        // INSERT YOUR USER
+        user: 'root',
+        // INSERT YOUR PASSWORD
         password: process.env.PASS,
-        database: 'company'
+        database: 'employee_db'
     })
 
 module.exports = db
