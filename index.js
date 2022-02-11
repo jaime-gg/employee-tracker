@@ -70,15 +70,64 @@ const startQuestions = () => {
 
 // VIEW FUNCTIONS
 viewDepartments = () => {
-    const sql = `SELECT `
+    const sql = `
+                SELECT * 
+                FROM department
+                `
+
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+
+        console.log("=========================")
+        console.table(rows);
+        console.log("=========================");
+
+        startQuestions();
+    });
 }; 
 
 viewRoles = () => {
+    const sql = `
+                SELECT r.id, r.title, r.salary, department.name AS department_name 
+                FROM role r
+                LEFT JOIN department ON department.id = r.department_id
+                `
 
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+
+        console.log("=======================================================")
+        console.table(rows);
+        console.log("=======================================================");
+
+        startQuestions();
+    });
 }; 
 
 viewEmployees = () => {
+    const sql = `
+                SELECT e.id, 
+                       CONCAT (e.first_name, " ", e.last_name) AS employee,
+                       department.name AS department,
+                       role.title,
+                       role.salary,
+                       CONCAT (manager.first_name, " ", manager.last_name) AS manager
+                FROM employee e
+                LEFT JOIN role ON e.role_id = role.id
+                LEFT JOIN department ON role.department_id = department.id
+                LEFT JOIN employee manager ON e.manager_id = manager.id
+                
+                `
 
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+
+        console.log("=======================================================================================")
+        console.table(rows);
+        console.log("=======================================================================================");
+
+        startQuestions();
+    });
 }; 
 
 // ADD FUNCTIONS

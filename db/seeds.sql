@@ -7,6 +7,7 @@ VALUES
 ('Accounting'),
 ('Human Resources');
 
+
 INSERT INTO role (title, salary, department_id)
 VALUES
 ('Web Developer', 70000, 1),
@@ -17,6 +18,7 @@ VALUES
 ('Finance Manager', 75000, 3),
 ('HR Director', 75000, 4),
 ('Compensation Manager', 70000, 4);
+
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
