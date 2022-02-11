@@ -10,11 +10,10 @@ const db = require('./db/connection.js');
 // USE THE DB/CONNECTIONS.JS TO START THE SHELL
 db.connect(err => {
     if (err) throw err;
-    console.log('STARTING APPLICATION')
     startQuestions();
 });
 
-// ONCE INITIALIZED, ASK THE USER WHAT THEY WPOULD LIKE TO DO 
+// ONCE INITIALIZED, ASK THE USER WHAT THEY WOULD LIKE TO DO 
 const startQuestions = () => {
     inquirer.prompt ([
         {
@@ -132,11 +131,87 @@ viewEmployees = () => {
 
 // ADD FUNCTIONS
 addDepartment = () => {
+    inquirer.prompt([
+        {
+          type: 'input', 
+          name: 'newDepartment',
+          message: "What department would you like to add?",
+          validate: newDepartment => {
+            if (newDepartment) {
+                return true;
+            } else {
+                console.log('Please enter a new department name');
+                return false;
+            }
+          }
+        }
+    ])
+    .then((answer) => {
+        const sql = `
+                    INSERT INTO department (name)
+                    VALUES (?)
+                    `
+        db.query (sql, answer.newDepartment, (err, result) => {
+            if (err) throw err;
 
+            viewDepartments();
+        });
+    });
 }; 
 
-addRole= () => {
+addRole = () => {
+    const getData = `SELECT * FROM department`
+    db.query(getData, (err, results) => {
+        if (err) throw err;
+        console.log(results)
 
+        inquirer.prompt([
+            {
+            type: 'input', 
+            name: 'title',
+            message: "What is the title of the new role?",
+            validate: title => {
+                if (title) {
+                    return true;
+                } else {
+                    console.log('Please enter a new role title');
+                    return false;
+                }
+            }
+            },
+            {
+            type: 'number', 
+            name: 'salary',
+            message: "What will be their salary?",
+            validate: salary => {
+                if(typeof salary === "number" &&  salary >  1){
+                    return true
+                }
+                console.log("Please enter a valid Salary using numbers higher than 1")
+                return false
+            }
+            },
+            {
+                message: "In what department is this role?",
+                name:"department_id",
+                type: "list",
+                choices: results.map(item=>{
+                        return {name: item.name, value:item.id}
+                    })
+            }
+        ])
+        .then(answer => {
+            const {title, salary, department_id} = answer
+            const params = [title, salary, department_id]
+            const sql = `INSERT INTO role (title, salary, department_id)
+                            VALUES (?, ?, ?)`;
+
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                viewRoles();
+            })
+        })
+    })
 }; 
 
 addEmployee= () => {
@@ -146,3 +221,4 @@ addEmployee= () => {
 updateEmployee= () => {
 
 }; 
+ 
