@@ -163,7 +163,7 @@ addRole = () => {
     const getData = `SELECT * FROM department`
     db.query(getData, (err, results) => {
         if (err) throw err;
-        console.log(results)
+        //console.log(results)
 
         inquirer.prompt([
             {
@@ -214,9 +214,73 @@ addRole = () => {
     })
 }; 
 
-addEmployee= () => {
+addEmployee = () => {
+    const getData = `SELECT role.id, role.title, employee.first_name, employee.last_name
+                     FROM role
+                     FULL JOIN employee
+                     `
+    db.query(getData, (err, results) => {
+        if (err) throw err;
 
-}; 
+        inquirer.prompt([
+            {
+                message: 'What is their first name?',
+                name: 'firstName',
+                type: 'input',
+                validate: (firstName) => {
+                    if (firstName) {
+                        return true
+                    }
+                    console.log("Please enter a valid name.")
+                    return false
+                }
+
+            },
+            {
+                message: 'What is their last name?',
+                name: 'lastName',
+                type: 'input',
+                validate: (lastName) => {
+                    if (lastName) {
+                        return true
+                    }
+                    console.log("Please enter a valid surname.")
+                    return false
+                }
+                
+            },
+            {
+                message: 'What is their role title?',
+                name: 'role',
+                type: 'list',
+                choices: results.map(item => {
+                    return {name: item.title, value: item.id}
+                }),
+            },
+            {
+                message: 'Who is their manager?',
+                name: 'manager',
+                type: 'list',
+                choices: results.map(item => {
+                    return {name: item.first_name + " " + item.last_name, value: item.id}
+                }),
+
+            }
+        ]).then((answer) => {
+            const {firstName, lastName, role_id, manager_id} = answer
+            const params = [firstName, lastName, role_id, manager_id]
+
+            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                         VALUES (?, ?, ?, ?)`
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                viewRoles();
+            })
+        })
+    })
+}
+
+
 // EDIT FUNCTIONS
 updateEmployee= () => {
 
