@@ -5,7 +5,7 @@ const cTable = require('console.table');
 
 const db = require('./db/connection.js');
 
-//-------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 // USE THE DB/CONNECTIONS.JS TO START THE SHELL
 db.connect(err => {
@@ -68,8 +68,10 @@ const startQuestions = () => {
     });
 };
 
-//------------------------------------------------------------------------------------------------- 
+//----------------------------------------------------------------------------------------------------------------
 // VIEW FUNCTIONS
+
+// SHOWCASE ALL DEPARTMENTS
 viewDepartments = () => {
     const sql = `
                 SELECT * 
@@ -87,6 +89,7 @@ viewDepartments = () => {
     });
 }; 
 
+// SHOWCASE ALL ROLES
 viewRoles = () => {
     const sql = `
                 SELECT r.id, r.title, r.salary, department.name AS department_name 
@@ -105,7 +108,9 @@ viewRoles = () => {
     });
 }; 
 
+// SHOWCASE ALL EMPLOYEES
 viewEmployees = () => {
+    // THROUGHOUT THE FILE USE 'CONCAT' TO JOIN NAMES FOR AESTHETICS AND USER FRIENDLINESS 
     const sql = `
                 SELECT e.id, 
                        CONCAT (e.first_name, " ", e.last_name) AS employee,
@@ -131,10 +136,10 @@ viewEmployees = () => {
     });
 }; 
 
-//------------------------------------------------------------------------------------------------- 
-// ADD/EDIT FUNCTIONS
+//---------------------------------------------------------------------------------------------------------------- 
+// ADD FUNCTIONS
 
-
+// ADD A DEPARTMENT 
 addDepartment = () => {
     inquirer.prompt([
         {
@@ -152,6 +157,7 @@ addDepartment = () => {
         }
     ])
     .then((answer) => {
+        // SQL INSERT SYNTAX TO UPDATE THE DEPARTMENT TABLE
         const sql = `
                     INSERT INTO department (name)
                     VALUES (?)
@@ -164,6 +170,7 @@ addDepartment = () => {
     });
 }; 
 
+// ADD A ROLE 
 addRole = () => {
     const getData = `SELECT * FROM department`
     db.query(getData, (err, results) => {
@@ -200,6 +207,7 @@ addRole = () => {
                 message: "In what department is this role?",
                 name:"department_id",
                 type: "list",
+                // THE CHOICES ARE PULLED FROM THE DEPARTMENT TABLE
                 choices: results.map(item=>{
                         return {name: item.name, value:item.id}
                     })
@@ -219,8 +227,8 @@ addRole = () => {
     })
 }; 
 
+// ADD AN EMPLOYEE 
 addEmployee = () => {
-                    //any alternatives to union operators since requires similar info
     const getData = `SELECT role.id, role.title, employee.first_name, employee.last_name
                      FROM role 
                      LEFT JOIN employee on role.id = employee.role_id
@@ -259,6 +267,7 @@ addEmployee = () => {
                 message: 'What is their role title?',
                 name: 'role_id',
                 type: 'list',
+                // THE CHOICES ARE PULLED FROM THE ROLE TABLE
                 choices: results.map(item => {
                     return {name: item.title, value: item.id}
                 }),
@@ -269,6 +278,7 @@ addEmployee = () => {
                 type: 'list',
                 loop: false,
                 pageSize: 12,
+                // THE CHOICES ARE PULLED FROM THE EMPLOYEE TABLE AND MERGED INTO A SINGLE NAME
                 choices: results.map(item => {
                     return {name: item.first_name + " " + item.last_name, value: item.id}
                 }),
@@ -288,10 +298,12 @@ addEmployee = () => {
     })
 }
 
-
+//---------------------------------------------------------------------------------------------------------------- 
 // EDIT FUNCTIONS
+
+// EDIT EMPLOYEE FUNCTION
 updateEmployee= () => {
-                // SELECT * FROM roles and SELECT * FROM departments
+    // SQL CODE TO BE PASSED INTO A QUERY 
     const sql = `SELECT role.id AS job, role.title, employee.id ,employee.first_name, employee.last_name
                 FROM role 
                 LEFT JOIN employee on role.id = employee.role_id
@@ -306,7 +318,7 @@ updateEmployee= () => {
                 type: 'list',
                 loop: false,
                 pageSize: 12,
-                
+                // THE CHOICES ARE PULLED FROM THE EMPLOYEE TABLE AND MERGED INTO A SINGLE NAME
                 choices: results.map(item => {
                     return {name: item.first_name + " " + item.last_name, value: item.id}
                 })
@@ -317,6 +329,7 @@ updateEmployee= () => {
                 type: 'list',
                 loop: false,
                 pageSize: 12,
+                // THE CHOICES ARE PULLED FROM THE ROLE TABLE
                 choices: results.map(item => {
                     return {name: item.title, value: item.job}
                 })
@@ -338,17 +351,19 @@ updateEmployee= () => {
     })
 }; 
  
-//------------------------------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------------------------------------------- 
 // BONUS CONTENT 
 
 // VIEW ALL DEPARTMENT BUDGETS
 budgetSum = () => {
+    //USE 'SUM' IN CONJUNCTION WITH 'GROUP BY' IN THE SQL
  const sql = `SELECT department_id AS id, 
                      department.name AS department,
                      SUM(salary) AS budget
               FROM  role  
               JOIN department ON role.department_id = department.id GROUP BY department_id`;
     
+    // QUERY THE SQL TO PULL THE NEEDED ROWS
     db.query(sql, (err, rows) => {
       if (err) throw err; 
 

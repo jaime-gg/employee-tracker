@@ -1,5 +1,6 @@
--- FILE THAT CONTAINES THE VALUES INSERTED INTO THE GIVEN TABLES -- 
+-- FILE THAT CONTAINES THE VALUES INSERTED INTO THE GIVEN TABLES UPON STARTUP-- 
 
+-- VALUES POPULATING THE DEPARTMENT TABLE --
 INSERT INTO department (name)
 VALUES
 ('IT'),
@@ -7,7 +8,7 @@ VALUES
 ('Accounting'),
 ('Human Resources');
 
-
+-- VALUES POPULATING THE ROLE TABLE --
 INSERT INTO role (title, salary, department_id)
 VALUES
 ('Web Developer', 70000, 1),
@@ -19,7 +20,7 @@ VALUES
 ('HR Director', 75000, 4),
 ('Compensation Manager', 70000, 4);
 
-
+-- VALUES POPULATING THE EMPLOYEE TABLE --
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
 ('Jack', 'Jackson', 1, 2),
