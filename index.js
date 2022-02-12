@@ -18,7 +18,7 @@ const startQuestions = () => {
     inquirer.prompt ([
         {
             type: 'list',
-            pageSize: 8,
+            pageSize: 9,
             name: 'choices',
             message: 'What are you looking to accomplish?',
             choices: [
@@ -29,6 +29,7 @@ const startQuestions = () => {
                 'Add A Role',
                 'Add An Employee',
                 'Update An Employee Role',
+                'View Department Budgets',
                 'EXIT'
             ],
         }
@@ -58,15 +59,16 @@ const startQuestions = () => {
             case 'Update An Employee Role':
                 updateEmployee(); 
                 break;
+            case 'View Department Budgets':
+                budgetSum(); 
+                break;
             case 'EXIT':
                 process.exit(1);
         };
     });
 };
 
-//-------------------------------------------------------------------------------------------------
-// FUNCTIONS RUN BY THE USER'S ANSWER 
-
+//------------------------------------------------------------------------------------------------- 
 // VIEW FUNCTIONS
 viewDepartments = () => {
     const sql = `
@@ -129,7 +131,10 @@ viewEmployees = () => {
     });
 }; 
 
-// ADD FUNCTIONS
+//------------------------------------------------------------------------------------------------- 
+// ADD/EDIT FUNCTIONS
+
+
 addDepartment = () => {
     inquirer.prompt([
         {
@@ -215,9 +220,10 @@ addRole = () => {
 }; 
 
 addEmployee = () => {
+                    //any alternatives to union operators since requires similar info
     const getData = `SELECT role.id, role.title, employee.first_name, employee.last_name
-                     FROM role
-                     FULL JOIN employee
+                     FROM role 
+                     LEFT JOIN employee on role.id = employee.role_id
                      `
     db.query(getData, (err, results) => {
         if (err) throw err;
@@ -251,7 +257,7 @@ addEmployee = () => {
             },
             {
                 message: 'What is their role title?',
-                name: 'role',
+                name: 'role_id',
                 type: 'list',
                 choices: results.map(item => {
                     return {name: item.title, value: item.id}
@@ -259,8 +265,10 @@ addEmployee = () => {
             },
             {
                 message: 'Who is their manager?',
-                name: 'manager',
+                name: 'manager_id',
                 type: 'list',
+                loop: false,
+                pageSize: 12,
                 choices: results.map(item => {
                     return {name: item.first_name + " " + item.last_name, value: item.id}
                 }),
@@ -274,7 +282,7 @@ addEmployee = () => {
                          VALUES (?, ?, ?, ?)`
             db.query(sql, params, (err, result) => {
                 if (err) throw err;
-                viewRoles();
+                viewEmployees();
             })
         })
     })
@@ -283,6 +291,71 @@ addEmployee = () => {
 
 // EDIT FUNCTIONS
 updateEmployee= () => {
+                // SELECT * FROM roles and SELECT * FROM departments
+    const sql = `SELECT role.id AS job, role.title, employee.id ,employee.first_name, employee.last_name
+                FROM role 
+                LEFT JOIN employee on role.id = employee.role_id
+                `
+    db.query(sql, (err, results) => {
+        if (err) throw err; 
 
+        inquirer.prompt([
+            {
+                message: "Who's role would you like to update?",
+                name: 'employee',
+                type: 'list',
+                loop: false,
+                pageSize: 12,
+                
+                choices: results.map(item => {
+                    return {name: item.first_name + " " + item.last_name, value: item.id}
+                })
+            },
+            {
+                message: "What role will they be taking?",
+                name: 'updatedRole',
+                type: 'list',
+                loop: false,
+                pageSize: 12,
+                choices: results.map(item => {
+                    return {name: item.title, value: item.job}
+                })
+            }
+        ]).then((answer) => {
+            const {employee, updatedRole} = answer
+            const params = [updatedRole, employee]
+            console.log(params)
+
+            const sql = `UPDATE employee
+                         SET role_id = ?
+                         WHERE id = ?;  
+                        `
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                viewEmployees();
+            })
+        })
+    })
 }; 
  
+//------------------------------------------------------------------------------------------------- 
+// BONUS CONTENT 
+
+// VIEW ALL DEPARTMENT BUDGETS
+budgetSum = () => {
+ const sql = `SELECT department_id AS id, 
+                     department.name AS department,
+                     SUM(salary) AS budget
+              FROM  role  
+              JOIN department ON role.department_id = department.id GROUP BY department_id`;
+    
+    db.query(sql, (err, rows) => {
+      if (err) throw err; 
+
+      console.log("=======================================================")
+      console.table(rows);
+      console.log("=======================================================");
+
+      startQuestions(); 
+    });            
+  };
