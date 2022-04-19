@@ -37,13 +37,13 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 The following video shows an example of the application being used from the command line:
 
-[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./Assets/video.png)](https://drive.google.com/file/d/1z5PXQ9NoqE7vkEqySHt15w6VVJ8Q7c6S/view)
+[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./assets/video.png)](https://drive.google.com/file/d/1z5PXQ9NoqE7vkEqySHt15w6VVJ8Q7c6S/view)
 
 ## Usage
 After cloning the repo, open a terminal inside the root of the application. There you will 'npm install' as to download all dependencies. After that, you much use mysql to initialize the database, as well as the schema.sql and seeds.sql files. After that is complete, you may start the application by simply inputting 'node index.js' in the terminal. 
 
 I'll include an image of the database being initialized in mysql as an example of how to properly start the application. 
-![An image of a terminal showcasing the proper use of mysql to start the database for the application.](./Assets/usage.gif)
+![An image of a terminal showcasing the proper use of mysql to start the database for the application.](./assets/usage.gif)
 
 
 ## Bonus
